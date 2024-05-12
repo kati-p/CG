@@ -78,6 +78,43 @@ void drawShearedRectangle(int x, int y, int width, int height, int shear=0) {
     line(topRightX, top, right, bottom); // Right edge (sheared)
 }
 
+// Function to draw a sheared and rotated rectangle
+void drawShearedRotatedRectangle(int x, int y, int width, int height, int shear=0, double angle=0) {
+    // Convert angle from degrees to radians
+    double radians = angle * M_PI / 180;
+
+    // Points for the original rectangle
+    int left = x;
+    int right = x + width;
+    int top = y;
+    int bottom = y + height;
+
+    // Calculate the sheared coordinates
+    int topRightX = right + shear; // Shearing the top-right corner
+    int topLeftX = left + shear;  // Shearing the top-left corner
+
+    // Calculate rotated positions for each corner
+    // Rotation matrix application [cos θ, -sin θ, sin θ, cos θ]
+    int rotatedTopLeftX = (int)(x + (topLeftX - x) * cos(radians) - (top - y) * sin(radians));
+    int rotatedTopLeftY = (int)(y + (topLeftX - x) * sin(radians) + (top - y) * cos(radians));
+
+    int rotatedTopRightX = (int)(x + (topRightX - x) * cos(radians) - (top - y) * sin(radians));
+    int rotatedTopRightY = (int)(y + (topRightX - x) * sin(radians) + (top - y) * cos(radians));
+
+    int rotatedBottomLeftX = (int)(x + (left - x) * cos(radians) - (bottom - y) * sin(radians));
+    int rotatedBottomLeftY = (int)(y + (left - x) * sin(radians) + (bottom - y) * cos(radians));
+
+    int rotatedBottomRightX = (int)(x + (right - x) * cos(radians) - (bottom - y) * sin(radians));
+    int rotatedBottomRightY = (int)(y + (right - x) * sin(radians) + (bottom - y) * cos(radians));
+
+    // Draw the sheared and rotated rectangle
+    setcolor(WHITE);
+    line(rotatedTopLeftX, rotatedTopLeftY, rotatedTopRightX, rotatedTopRightY); // Top edge
+    line(rotatedBottomLeftX, rotatedBottomLeftY, rotatedBottomRightX, rotatedBottomRightY); // Bottom edge
+    line(rotatedTopLeftX, rotatedTopLeftY, rotatedBottomLeftX, rotatedBottomLeftY); // Left edge
+    line(rotatedTopRightX, rotatedTopRightY, rotatedBottomRightX, rotatedBottomRightY); // Right edge (sheared)
+}
+
 void drawTable(int x, int y) {
     setcolor(WHITE);
     drawShearedRectangle(x, y, 500, 50, 50);
@@ -292,9 +329,6 @@ void drawScene2() {
     for(int i = 0; i < 4 ; i++){
         for(float j = 0; j < 1 ; j += 0.01) {
             cleardevice();
-            drawTable(tableX, tableY);
-            drawBook(bookX, bookY);
-            drawNNsit(400, tableY-200, armX);
 
             switch(i%2) {
                 case 0:
@@ -304,6 +338,11 @@ void drawScene2() {
                     drawMoon(curve(x1, x2, x3, j), curve(y1, y2, y3, j), 30);
                     break;
             }
+
+            drawShearedRotatedRectangle(275, 75, 150, 175, -50, 90);
+            drawTable(tableX, tableY);
+            drawBook(bookX, bookY);
+            drawNNsit(400, tableY-200, armX);
 
             if (armX >= 0) {
                 arm = 0;
@@ -325,6 +364,7 @@ void drawScene2() {
 
     for (float i = 0.1; i < 2; i += 0.1) {
         cleardevice();
+        drawShearedRotatedRectangle(275, 75, 150, 175, -50, 90);
         drawTable(tableX, tableY);
         drawBook(bookX, bookY);
         drawNNsit(400, tableY-200, armX);
@@ -334,6 +374,7 @@ void drawScene2() {
     delay(1000);
 
     cleardevice();
+    drawShearedRotatedRectangle(275, 75, 150, 175, -50, 90);
     drawTable(tableX, tableY);
     drawBook(bookX, bookY);
     delay(3000);
@@ -361,13 +402,18 @@ void drawScene3() {
     bar(0, 0, getmaxx(), getmaxy());
 }
 
+void drawScene4() {
+    cleardevice();
+}
+
 int main() {
     int gd = DETECT, gm;
     initgraph(&gd, &gm, NULL);  // Initialize graphics mode
 
     // drawScene1();
     drawScene2();
-    drawScene3();
+    // drawScene3();
+    // drawScene4();
 
     getch();  // Wait for a key press
     closegraph();  // Close graphics mode
