@@ -1,4 +1,4 @@
-#include <graphics.h>
+#include <graphics.h>   
 #include <conio.h>
 #include <cmath>
 
@@ -113,6 +113,104 @@ void drawShearedRotatedRectangle(int x, int y, int width, int height, int shear=
     line(rotatedBottomLeftX, rotatedBottomLeftY, rotatedBottomRightX, rotatedBottomRightY); // Bottom edge
     line(rotatedTopLeftX, rotatedTopLeftY, rotatedBottomLeftX, rotatedBottomLeftY); // Left edge
     line(rotatedTopRightX, rotatedTopRightY, rotatedBottomRightX, rotatedBottomRightY); // Right edge (sheared)
+}
+
+// Function to draw a sheared and rotated rectangle
+void drawWindowWithClipping(int x, int y, int width, int height, int shear=0, double angle=0) {
+    // Convert angle from degrees to radians
+    double radians = angle * M_PI / 180;
+
+    // Points for the original rectangle
+    int left = x;
+    int right = x + width;
+    int top = y;
+    int bottom = y + height;
+
+    // Calculate the sheared coordinates
+    int topRightX = right + shear; // Shearing the top-right corner
+    int topLeftX = left + shear;  // Shearing the top-left corner
+
+    // Calculate rotated positions for each corner
+    // Rotation matrix application [cos θ, -sin θ, sin θ, cos θ]
+    int rotatedTopLeftX = (int)(x + (topLeftX - x) * cos(radians) - (top - y) * sin(radians));
+    int rotatedTopLeftY = (int)(y + (topLeftX - x) * sin(radians) + (top - y) * cos(radians));
+
+    int rotatedTopRightX = (int)(x + (topRightX - x) * cos(radians) - (top - y) * sin(radians));
+    int rotatedTopRightY = (int)(y + (topRightX - x) * sin(radians) + (top - y) * cos(radians));
+
+    int rotatedBottomLeftX = (int)(x + (left - x) * cos(radians) - (bottom - y) * sin(radians));
+    int rotatedBottomLeftY = (int)(y + (left - x) * sin(radians) + (bottom - y) * cos(radians));
+
+    int rotatedBottomRightX = (int)(x + (right - x) * cos(radians) - (bottom - y) * sin(radians));
+    int rotatedBottomRightY = (int)(y + (right - x) * sin(radians) + (bottom - y) * cos(radians));
+
+    // Draw the sheared and rotated rectangle
+    setcolor(WHITE);
+    line(rotatedTopLeftX, rotatedTopLeftY, rotatedTopRightX, rotatedTopRightY); // Top edge
+    line(rotatedBottomLeftX, rotatedBottomLeftY, rotatedBottomRightX, rotatedBottomRightY); // Bottom edge
+    line(rotatedTopLeftX, rotatedTopLeftY, rotatedBottomLeftX, rotatedBottomLeftY); // Left edge
+    line(rotatedTopRightX, rotatedTopRightY, rotatedBottomRightX, rotatedBottomRightY); // Right edge (sheared)
+
+
+    // Do Clipping 90 degree
+    if (angle != 90) return;
+    // Define the points of the polygon
+    int points[8];
+    // Set the color for the beam
+    setcolor(BLACK);
+    setfillstyle(SOLID_FILL, BLACK);
+
+    // clip bottom
+    points[0] = rotatedBottomRightX;
+    points[1] = rotatedBottomRightY + 1;
+    points[2] = rotatedTopRightX;
+    points[3] = rotatedTopRightY + 1;
+    points[4] = getmaxx()/2;
+    points[5] = getmaxy();
+    points[6] = 0;      
+    points[7] = getmaxy();       
+    // Fill the beam with color
+    fillpoly(4, points); // 4 is the number of points in the polygon
+
+    // clip right
+    points[0] = rotatedTopLeftX + 1;
+    points[1] = 0;
+    points[2] = getmaxx();
+    points[3] = 0;
+    points[4] = getmaxx();
+    points[5] = getmaxy()/2;
+    points[6] = rotatedTopLeftX + 1;      
+    points[7] = getmaxy()/2;       
+    // Fill the beam with color
+    fillpoly(4, points); // 4 is the number of points in the polygon
+
+    // clip left
+    points[0] = 0;
+    points[1] = 0;
+    points[2] = rotatedBottomLeftX - 1;
+    points[3] = 0;
+    points[4] = rotatedBottomLeftX - 1;
+    points[5] = getmaxy();
+    points[6] = 0;      
+    points[7] = getmaxy();       
+    // Fill the beam with color
+    fillpoly(4, points); // 4 is the number of points in the polygon
+
+    // clip top
+    points[0] = 0;
+    points[1] = 0;
+    points[2] = getmaxx();
+    points[3] = 0;
+    points[4] = rotatedTopLeftX;
+    points[5] = rotatedTopLeftY - 1;
+    points[6] = rotatedBottomLeftX;      
+    points[7] = rotatedBottomLeftY -1;       
+    // Fill the beam with color
+    fillpoly(4, points); // 4 is the number of points in the polygon
+
+    
+
+    
 }
 
 void drawTable(int x, int y) {
@@ -339,7 +437,7 @@ void drawScene2() {
                     break;
             }
 
-            drawShearedRotatedRectangle(275, 75, 150, 175, -50, 90);
+            drawWindowWithClipping(275, 75, 150, 175, -50, 90);
             drawTable(tableX, tableY);
             drawBook(bookX, bookY);
             drawNNsit(400, tableY-200, armX);
@@ -410,10 +508,10 @@ int main() {
     int gd = DETECT, gm;
     initgraph(&gd, &gm, NULL);  // Initialize graphics mode
 
-    // drawScene1();
+    drawScene1();
     drawScene2();
-    // drawScene3();
-    // drawScene4();
+    drawScene3();
+    drawScene4();
 
     getch();  // Wait for a key press
     closegraph();  // Close graphics mode
