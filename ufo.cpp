@@ -328,6 +328,54 @@ void drawNNpin(int x, int y, float scale=1, char color=WHITE) {
     setcolor(WHITE);
 }
 
+void drawFiringBullet(int x, int y) {
+    // Define the points of the polygon
+    int points[8];
+
+    points[0] = x;          // Starting x point
+    points[1] = y;          // Starting y point
+    points[2] = x + 30;    // Left endpoint x of the beam
+    points[3] = y - 30;     // Left endpoint y of the beam
+    points[4] = x + 35;    // Right endpoint x of the beam
+    points[5] = y - 25;     // Right endpoint y of the beam
+    points[6] = x + 5;     // Close the polygon back at the starting x point
+    points[7] = y + 5;     // Close the polygon back at the starting y point
+
+    // Set the color for the beam
+    setcolor(GREEN);
+    setfillstyle(SOLID_FILL, GREEN);
+
+    // Fill the beam with color
+    fillpoly(4, points); // 4 is the number of points in the polygon
+}
+
+void drawNNAction(int x, int y, float scale=1, char color=WHITE) {
+    setcolor(color);
+
+    setfillstyle(SOLID_FILL, color);
+    fillellipse(x, y, 50 * scale, 50 * scale);
+
+    line(x, y + 50 * scale, x, y + 175 * scale); //Body
+
+    line(x, y + 75 * scale, x + 75 * scale, y + 75 * scale); // Arm1
+
+    line(x, y + 75 * scale, x + 75 * scale, y + 50 * scale); // Arm2
+
+    line(x, y + 175 * scale, x - 50 * scale, y + 250 * scale); // Left leg
+
+    line(x, y + 175 * scale, x + 50 * scale, y + 250 * scale); // Right leg
+
+    setfillstyle(SOLID_FILL, BLACK);
+    fillellipse(x + 20 * scale, y + 5 * scale, 13 * scale, 13 * scale);
+
+    setcolor(BLACK);
+    setfillstyle(SOLID_FILL, WHITE);
+    fillellipse(x + 20 * scale, y, 13 * scale, 13 * scale);
+
+    // end
+    setcolor(WHITE);
+}
+
 void drawNNhead(int x, int y, float scale=1, char color=WHITE) {
     setcolor(color);
 
@@ -634,6 +682,120 @@ void drawScene5() {
     delay(1000);
 }
 
+void drawScene6() {
+    cleardevice();
+
+    int xM = 100;
+    int yM = getmaxy() - 150;
+
+    // interation n times
+    for (int n = 0; n < 10; n++) {
+        
+        // firing bullets
+        int xB = xM + 40;
+        int yB = yM + 10;
+
+        int xB1 = xB;
+        int yB1 = yB;
+        int xB2 = xB;
+        int yB2 = yB + 50;
+        int xB3 = xB;
+        int yB3 = yB - 50;
+        int xB4 = xB;
+        int yB4 = yB + 100;
+        bool c1 = false;
+        bool c2 = false;
+        bool c3 = false;
+        bool c4 = false;
+
+        int fireRate = 40;
+
+        // ufo
+        int xU = getmaxx() - 20;
+        int yU = -20;
+
+        int xU1 = xU;
+        int yU1 = yU;
+        int xU2 = xU + 100;
+        int yU2 = yU + 100;
+        int xU3 = xU -150;
+        int yU3 = yU;
+
+        // loop Frame
+        int i = 0;
+        while (1) {
+            // start loop
+            cleardevice();
+            drawNNAction(xM, yM, 0.5, LIGHTGREEN);
+            
+            // firing 1
+            if (yB1 <= 0 || xB1 >= getmaxx()) {
+                c1 = true;
+            } else if (i > 0) {
+                drawFiringBullet(xB1, yB1);
+                xB1 += fireRate;
+                yB1 -= fireRate;
+            }
+
+            // firing 2
+            if (yB2 <= 0 || xB2 >= getmaxx()) {
+                c2 = true;
+            } else if (i > 10) {
+                drawFiringBullet(xB2, yB2);
+                xB2 += fireRate;
+                yB2 -= fireRate;
+            }
+
+            // firing 3
+            if (yB3 <= 0 || xB3 >= getmaxx()) {
+                c3 = true;
+            } else if (i > 5) {
+                drawFiringBullet(xB3, yB3);
+                xB3 += fireRate;
+                yB3 -= fireRate;
+            }
+
+            // firing 4
+            if (yB4 <= 0 || xB4 >= getmaxx()) {
+                c4 = true;
+            } else if (i > 15) {
+                drawFiringBullet(xB4, yB4);
+                xB4 += fireRate;
+                yB4 -= fireRate;
+            }
+
+            // ufo 1
+            if (yU1 < yB && xU1 > xB && i > 0) {
+                drawUFO(xU1, yU1);
+                xU1 -= fireRate;
+                yU1 += fireRate;
+            }
+
+            // ufo 2
+            if (yU2 < yB && xU2 > xB && i > 5) {
+                drawUFO(xU2, yU2);
+                xU2 -= fireRate;
+                yU2 += fireRate;
+            }
+
+            // ufo 3
+            if (yU3 < yB && xU3 > xB && i > 10) {
+                drawUFO(xU3, yU3);
+                xU3 -= fireRate;
+                yU3 += fireRate;
+            }
+
+            // end loop
+            delay(FRAME);
+            i++;
+            if (c1 && c2 && c3 && c4) break;
+        }
+    }
+    
+    delay(1000);
+
+}
+
 void drawScene7() {
     cleardevice();
 }
@@ -663,13 +825,14 @@ int main() {
     int gd = DETECT, gm;
     initgraph(&gd, &gm, NULL);  // Initialize graphics mode
 
-    // drawScene1(); 
-    // drawScene2();
+    drawScene1(); 
+    drawScene2();
     drawScene3();
     drawScene4();
-    // drawScene5();
-    // drawScene7();
-    // drawScene8();
+    drawScene5();
+    drawScene6();
+    drawScene7();
+    drawScene8();
     
     getch();  // Wait for a key press
     closegraph();  // Close graphics mode
