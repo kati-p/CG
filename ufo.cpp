@@ -3,6 +3,7 @@
 #include <cmath>
 
 #define FRAME 1000/24
+#define PI 3.14159265
 
 // Function to draw a stickman
 void drawStickman(int x, int y) {
@@ -301,32 +302,46 @@ void drawNNsit(int x, int y, int move=0) {
     fillellipse(x+25, y+20, 20, 20);
 }
 
-void drawNNpin(int x, int y) {
-    setcolor(WHITE);
+void drawNNpin(int x, int y, float scale=1, char color=WHITE) {
+    setcolor(color);
 
-    setfillstyle(SOLID_FILL, WHITE);
-    fillellipse(x, y, 50, 50);
+    setfillstyle(SOLID_FILL, color);
+    fillellipse(x, y, 50 * scale, 50 * scale);
 
-    line(x, y + 50, x, y + 175); //Body
+    line(x, y + 50 * scale, x, y + 175 * scale); //Body
 
-    line(x - 75, y + 75, x + 75, y + 75); // Arms
+    line(x - 75 * scale, y + 75 * scale, x + 75 * scale, y + 75 * scale); // Arms
 
-    line(x, y + 175, x - 50, y + 250); // Left leg
+    line(x, y + 175 * scale, x - 50 * scale, y + 250 * scale); // Left leg
 
-    line(x, y + 175, x + 50, y + 250); // Right leg
+    line(x, y + 175 * scale, x + 50 * scale, y + 250 * scale); // Right leg
 
     setfillstyle(SOLID_FILL, BLACK);
-    fillellipse(x-20, y+5, 13, 13);
-    fillellipse(x+20, y+5, 13, 13);
+    fillellipse(x - 20 * scale, y + 5 * scale, 13 * scale, 13 * scale);
+    fillellipse(x + 20 * scale, y + 5 * scale, 13 * scale, 13 * scale);
 
     setcolor(BLACK);
     setfillstyle(SOLID_FILL, WHITE);
-    fillellipse(x-20, y, 13, 13);
-    fillellipse(x+20, y, 13, 13);
+    fillellipse(x - 20 * scale, y, 13 * scale, 13 * scale);
+    fillellipse(x + 20 * scale, y, 13 * scale, 13 * scale);
 
-    //solid rectangle
-    bar(x - 50, y + 60, x - 40, y + 90);
-    bar(x + 50, y + 60, x + 60, y + 90);
+    setcolor(WHITE);
+}
+
+void drawNNhead(int x, int y, float scale=1, char color=WHITE) {
+    setcolor(color);
+
+    setfillstyle(SOLID_FILL, color);
+    fillellipse(x, y, 50 * scale, 50 * scale);
+
+    setfillstyle(SOLID_FILL, BLACK);
+    fillellipse(x - 20 * scale, y + 5 * scale, 13 * scale, 13 * scale);
+    fillellipse(x + 20 * scale, y + 5 * scale, 13 * scale, 13 * scale);
+
+    setcolor(BLACK);
+    setfillstyle(SOLID_FILL, WHITE);
+    fillellipse(x - 20 * scale, y, 13 * scale, 13 * scale);
+    fillellipse(x + 20 * scale, y, 13 * scale, 13 * scale);
 
     setcolor(WHITE);
 }
@@ -336,6 +351,62 @@ void drawContainer(int x, int y) {
     rectangle(x, y, x + 300, y + 400);
     line(x, y + 30, x + 300, y + 30);
     line(x, y + 370, x + 300, y + 370);
+}
+
+void drawNNdead(int x, int y, float scale=1, int color=WHITE, float angle=0) {
+    setcolor(color);
+
+    double radians = angle * M_PI / 180;
+
+    int rotatedX = (int)(x + (0) * cos(radians) - (0) * sin(radians));
+    int rotatedY = (int)(y + (0) * sin(radians) + (0) * cos(radians));
+
+    setfillstyle(SOLID_FILL, color);
+    fillellipse(x, y, 50 * scale, 50 * scale);
+
+    line(x, y + 50 * scale, x, y + 175 * scale); //Body
+
+    line(x - 75 * scale, y + 75 * scale, x + 75 * scale, y + 75 * scale); // Arms
+
+    line(x, y + 175 * scale, x - 50 * scale, y + 250 * scale); // Left leg
+
+    line(x, y + 175 * scale, x + 50 * scale, y + 250 * scale); // Right leg
+
+    setfillstyle(SOLID_FILL, BLACK);
+    fillellipse(x - 20 * scale, y + 5 * scale, 13 * scale, 13 * scale);
+    fillellipse(x + 20 * scale, y + 5 * scale, 13 * scale, 13 * scale);
+
+    setcolor(BLACK);
+    setfillstyle(SOLID_FILL, WHITE);
+    fillellipse(x - 20 * scale, y, 13 * scale, 13 * scale);
+    fillellipse(x + 20 * scale, y, 13 * scale, 13 * scale);
+
+    setcolor(WHITE);
+}
+
+void drawNNsleep(int x, int y, boolean isSleep=true) {
+    setcolor(LIGHTGREEN);
+
+    line(x, y + 160, x - 100, y + 190);
+    line(x - 100, y + 190, x - 25, y + 250);
+    line(x, y + 160, x + 100, y + 170);
+    line(x + 100, y + 170, x + 100, y + 275);
+
+    setfillstyle(SOLID_FILL, LIGHTGREEN);
+    fillellipse(x, y + 160, 70, 70);
+
+    setfillstyle(SOLID_FILL, BLACK);
+    fillellipse(x - 30, y + 165, 21, 21);
+    fillellipse(x + 30, y + 165, 21, 21);
+
+    if(!isSleep) {
+        setcolor(BLACK);
+        setfillstyle(SOLID_FILL, WHITE);
+    } else {
+        setfillstyle(SOLID_FILL, LIGHTGREEN);
+    }
+    fillellipse(x - 30, y + 160, 20, 20);
+    fillellipse(x + 30, y + 160, 20, 20);
 }
 
 void drawScene1() {
@@ -481,38 +552,125 @@ void drawScene2() {
 }
 
 void drawScene3() {
-    drawNNpin(getmaxx()/2, getmaxy()/2-100);
-    drawContainer(getmaxx()/2-150, getmaxy()/2-200);
+    int x = getmaxx();
+    int y = getmaxy();
+
+    drawNNpin(x/2, y/2-100);
+    bar(x/2 - 50, y/2 - 40, x/2 - 40, y/2 - 10);
+    bar(x/2 + 50, y/2 - 40, x/2 + 60, y/2 - 10);
+    drawContainer(x/2-150, y/2-200);
     delay(2000);
 
     setfillstyle(SOLID_FILL, GREEN);
     for (float i = 0; i <= 1; i += 0.01) {
         cleardevice();
-        bar(getmaxx()/2-150, getmaxy()/2-200 + 370 - 340*i, getmaxx()/2-150 + 300, getmaxy()/2-200 + 370);
-        drawNNpin(getmaxx()/2, getmaxy()/2-100);
-        drawContainer(getmaxx()/2-150, getmaxy()/2-200);
+        bar(x/2-150, y/2-200 + 370 - 340*i, x/2-150 + 300, y/2-200 + 370);
+        drawNNpin(x/2, y/2-100);
+        setfillstyle(SOLID_FILL, WHITE);
+        bar(x/2 - 50, y/2 - 40, x/2 - 40, y/2 - 10);
+        bar(x/2 + 50, y/2 - 40, x/2 + 60, y/2 - 10);
+        drawContainer(x/2-150, y/2-200);
         setfillstyle(SOLID_FILL, GREEN);
         delay(FRAME);
     }
     delay(2000);
 
     cleardevice();
-    bar(0, 0, getmaxx(), getmaxy());
+    bar(0, 0, x, y);
+    delay(1000);
 }
 
 void drawScene4() {
+    int x = getmaxx(), y = getmaxy();
+
     cleardevice();
+    drawNNhead(x/4, y/2, 1);
+    setfillstyle(SOLID_FILL, GREEN);
+    bar(x*3/4, y/2-40, x*3/4+50, y/2+40);
+    delay(1000);
+
+    for (int i = 0; i < 150; i += 5) {
+        cleardevice();
+        drawNNhead(x/4 + i, y/2, 1);
+        setfillstyle(SOLID_FILL, GREEN);
+        bar(x*3/4 - i, y/2 - 40, x*3/4 + 50 - i, y/2 + 40);
+        delay(FRAME);
+    }
+
+    cleardevice();
+    drawNNpin(x/2, y/2-100, 1, LIGHTGREEN);
+    delay(2000);
+    
+    cleardevice();
+    delay(2000);
+}
+
+void drawScene5() {
+    int x = getmaxx(), y = getmaxy();
+    int ufoX = x*3/4, ufoY = 100;
+
+    cleardevice();
+    drawUFO(ufoX, ufoY);
+    delay(1000);
+
+    setfillstyle(SOLID_FILL, RED);
+    fillellipse(ufoX - 20, ufoY, 30, 30);
+    delay(1000);
+    
+    int nnX = ufoX - 20, nnY = ufoY - 50;
+    cleardevice();
+    drawUFO(ufoX, ufoY);
+    drawNNpin(ufoX - 20, ufoY - 50, 0.2, LIGHTGREEN);
+    delay(500);
+
+    float scale = 0.2;
+    for (float i = 0; i <= 1; i += 0.02) {
+        cleardevice();
+        drawUFO(ufoX, ufoY);
+        if (scale < 0.8) scale += 0.01;
+        drawNNpin(curve(nnX, 100, x/4, i), curve(nnY, nnY, 250, i), scale, LIGHTGREEN);
+        delay(FRAME);
+    }
+    delay(1000);
+}
+
+void drawScene7() {
+    cleardevice();
+}
+
+void drawScene8() {
+    cleardevice();
+    int tableX = 100, tableY = getmaxy()-80;
+    int bookX = 300, bookY = getmaxy()-70;
+    drawWindowWithClipping(275, 75, 150, 175, -50, 90);
+    drawTable(tableX, tableY);
+    drawBook(bookX, bookY);
+    drawNNsleep(400, tableY-200);
+    delay(3000);
+
+    cleardevice();
+    drawWindowWithClipping(275, 75, 150, 175, -50, 90);
+    drawTable(tableX, tableY);
+    drawBook(bookX, bookY);
+    drawNNsleep(400, tableY-200, false);
+    delay(1500);
+
+    cleardevice();
+    delay(2000);
 }
 
 int main() {
     int gd = DETECT, gm;
     initgraph(&gd, &gm, NULL);  // Initialize graphics mode
 
-    drawScene1();
-    drawScene2();
+    // drawScene1(); 
+    // drawScene2();
     drawScene3();
     drawScene4();
-
+    // drawScene5();
+    // drawScene7();
+    // drawScene8();
+    
     getch();  // Wait for a key press
     closegraph();  // Close graphics mode
     return 0;
